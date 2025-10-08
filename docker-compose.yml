@@ -1,7 +1,7 @@
 services:
     sql_service:
         build:  
-            context: D:\\david\\testKPMGDCompose\\sqlinstance
+            context: ../testKPMGDCompose/sqlinstance
             dockerfile: dockerfile
         image: sqlintance:latest
         container_name: Sql_KPMGInstance
@@ -11,11 +11,18 @@ services:
             - MSSQL_PID=Developer
         ports:
             - "1468:1433"
-        restart: unless-stopped\
-    # kpmg_back_service:
-    #   build:  
-    #     context: D:\\david\\testKPMGDCompose\\kpmg_back
-    #     dockerfile: dockerfile
-    #   image: kpmg_back:latest
-    #   container_name: KPMG_Back
-    #   environment:
+        restart: unless-stopped
+    kpmg_back_service:
+        build:
+            context: ../testKPMG/testKPMG/testKPMG
+            dockerfile: Dockerfile
+        image: kpmg_back:latest
+        container_name: KPMG_Back
+        depends_on:
+                - sql_service
+        environment:
+            - ConnectionStrings__DefaultConnection=Server=sql_service;Database=${DB_DATABASE};User Id=sa;Password=vInKeWyAGkEmkzqgcxHrblEzHART+aj5RsANS02nFHk=;Encrypt=False;TrustServerCertificate=True;
+        ports:
+                - "8000:8080"
+                - "8001:8081"
+        restart: always

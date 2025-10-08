@@ -1,0 +1,21 @@
+services:
+    sql_service:
+        build:  
+            context: D:\\david\\testKPMGDCompose\\sqlinstance
+            dockerfile: dockerfile
+        image: sqlintance:latest
+        container_name: Sql_KPMGInstance
+        environment:
+            - ACCEPT_EULA="Y"
+            - MSSQL_SA_PASSWORD=vInKeWyAGkEmkzqgcxHrblEzHART+aj5RsANS02nFHk=
+            - MSSQL_PID=Developer
+        ports:
+            - "1468:1433"
+        restart: unless-stopped\
+    # kpmg_back_service:
+    #   build:  
+    #     context: D:\\david\\testKPMGDCompose\\kpmg_back
+    #     dockerfile: dockerfile
+    #   image: kpmg_back:latest
+    #   container_name: KPMG_Back
+    #   environment:

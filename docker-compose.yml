@@ -1,3 +1,6 @@
+volumes:
+        sql-intance-volume:
+            driver: local
 services:
     sql_service:
         build:  
@@ -7,10 +10,12 @@ services:
         container_name: Sql_KPMGInstance
         environment:
             - ACCEPT_EULA="Y"
-            - MSSQL_SA_PASSWORD=vInKeWyAGkEmkzqgcxHrblEzHART+aj5RsANS02nFHk=
+            - MSSQL_SA_PASSWORD=${DB_PASSWORD}
             - MSSQL_PID=Developer
         ports:
             - "1468:1433"
+        volumes:
+            - sql-intance-volume:/var/opt/mssql
         restart: unless-stopped
     kpmg_back_service:
         build:
@@ -26,3 +31,16 @@ services:
                 - "8000:8080"
                 - "8001:8081"
         restart: always
+    react_kpmg_service:
+        build: 
+            context: ../testKPMGFront/testkpmg-ts
+            dockerfile: Dockerfile
+        image: kpmg_front:latest
+        container_name: KPMG_Front
+        depends_on:
+                - kpmg_back_service
+        environment:
+            - VITE_AYCE_API_BASE_URL=http://kpmg_back_service:8080
+        ports:
+                - "3000:80"
+        restart: unless-stopped
